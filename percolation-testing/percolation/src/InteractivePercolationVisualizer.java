@@ -1,3 +1,6 @@
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
 /****************************************************************************
  *  Compilation:  javac InteractivePercolationVisualizer.java
  *  Execution:    java InteractivePercolationVisualizer N
@@ -27,18 +30,14 @@ public class InteractivePercolationVisualizer {
         StdDraw.show(0);
 
         while (true) {
-
             // detected mouse click
             if (StdDraw.mousePressed()) {
-
                 // screen coordinates
                 double x = StdDraw.mouseX();
                 double y = StdDraw.mouseY();
-
                 // convert to row i, column j
                 int i = (int) (N - Math.floor(y));
                 int j = (int) (1 + Math.floor(x));
-
                 // open site (i, j) provided it's in bounds
                 if (i >= 1 && i <= N && j >= 1 && j <= N) {
                     if (!perc.isOpen(i, j)) { 
@@ -46,7 +45,6 @@ public class InteractivePercolationVisualizer {
                     }
                     perc.open(i, j);
                 }
-
                 // draw N-by-N percolation system
                 StdDraw.show(0);
                 PercolationVisualizer.draw(perc, N);

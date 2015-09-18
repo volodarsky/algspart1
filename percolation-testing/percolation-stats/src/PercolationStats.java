@@ -1,3 +1,6 @@
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.Stopwatch;
+
 public class PercolationStats {
 
     private final int gridSize;

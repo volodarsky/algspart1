@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
+
 public class Percolation {
 
     private static final String ROW_INDEX_SHOULD_BE_GREATER_OR_EQUALS_1 = "Row index should be greater or equals 1";

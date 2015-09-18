@@ -162,6 +162,12 @@ public class Deque<Item> implements Iterable<Item> {
             assert ITEM_IS_NULL.equals(e.getMessage());
         }
 
+        stringDeque.addLast(ZERO);
+        assert stringDeque.iterator().hasNext();
+        stringDeque.removeLast();
+        assert !stringDeque.iterator().hasNext();
+        assert stringDeque.size() == 0;
+
         stringDeque.addFirst(ZERO);
         assert stringDeque.size() == 1;
         String last = stringDeque.removeLast();
