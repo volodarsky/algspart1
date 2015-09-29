@@ -2,7 +2,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-public class Fast {
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
+public class FastCollinearPoints {
 
     private static TreeSet<Object> allCollinears;
 

@@ -1,9 +1,11 @@
+import edu.princeton.cs.algs4.StdDraw;
+
 import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
 
     // compare points by slope
-    public final Comparator<Point> SLOPE_ORDER = new Comparator<Point>() {
+    private final Comparator<Point> SLOPE_ORDER = new Comparator<Point>() {
         @Override
         public int compare(Point p1, Point p2) {
             if(p1 == null || p2 == null) throw new NullPointerException();
@@ -20,6 +22,10 @@ public class Point implements Comparable<Point> {
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Comparator<Point> slopeOrder(){
+        return SLOPE_ORDER;
     }
 
     // plot this point to standard drawing

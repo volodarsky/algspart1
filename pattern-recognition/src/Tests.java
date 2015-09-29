@@ -1,5 +1,7 @@
 import java.util.Iterator;
 
+import edu.princeton.cs.algs4.MaxPQ;
+
 /**
  * Created by vladimir.romanov on 25.07.2015.
  */
@@ -27,8 +29,7 @@ public class Tests {
         System.out.println();
 
 
-        BST<Comparable, Object> bst = new BST<>();
-        bst.p
+        //BST<Comparable, Object> bst = new BST<>();
 
     }
 }
