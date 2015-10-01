@@ -129,7 +129,7 @@ public class Board {
         final int[][] blocks = new int[size][size];
 
         for (int i = 0; i < blocks.length; i++) {
-            System.arraycopy(elements, i * size + 1, blocks[i], 0, size);
+            System.arraycopy(copy, i * size + 1, blocks[i], 0, size);
         }
         return new Board(blocks);
     }
@@ -191,6 +191,7 @@ public class Board {
         final StringBuilder builder = new StringBuilder();
         builder.append(size).append('\n');
         for (int i = 1; i < elements.length; i++) {
+            if(elements[i] < 10) builder.append(' ');
             builder.append(elements[i]).append(' ');
             if (i % size == 0) builder.append('\n');
         }
@@ -198,7 +199,7 @@ public class Board {
     }
 
     private void swap(int[] a, int i, int j) {
-        assert i < a.length && i < a.length;
+        assert i < a.length && j < a.length;
         a[i] ^= a[j];
         a[j] ^= a[i];
         a[i] ^= a[j];
@@ -212,7 +213,7 @@ public class Board {
 
         final Board original = new Board(grid);
 
-        System.out.println(original.toString());
+        //System.out.println(original.toString());
 
         final boolean goal = original.isGoal();
         //assert goal;

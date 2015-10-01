@@ -5,16 +5,7 @@ import java.util.Comparator;
 public class Point implements Comparable<Point> {
 
     // compare points by slope
-    private final Comparator<Point> SLOPE_ORDER = new Comparator<Point>() {
-        @Override
-        public int compare(Point p1, Point p2) {
-            if(p1 == null || p2 == null) throw new NullPointerException();
-
-            int compare = Double.compare(slopeTo(p1), slopeTo(p2));
-            //System.out.println("(" + x + ", " + y + ")" + " - " + p1 + " - " + p2 + " : " + slopeTo(p1) + " : " + slopeTo(p2) + " : " + compare);
-            return compare;
-        }
-    };
+    //private final Comparator<Point> SLOPE_ORDER = new PointComparator();
 
     private final int x;
     private final int y;
@@ -25,7 +16,7 @@ public class Point implements Comparable<Point> {
     }
 
     public Comparator<Point> slopeOrder(){
-        return SLOPE_ORDER;
+        return new PointComparator();
     }
 
     // plot this point to standard drawing
@@ -83,4 +74,14 @@ public class Point implements Comparable<Point> {
     }
 
 
+    private class PointComparator implements Comparator<Point> {
+        @Override
+        public int compare(Point p1, Point p2) {
+            if(p1 == null || p2 == null) throw new NullPointerException();
+
+            int compare = Double.compare(slopeTo(p1), slopeTo(p2));
+            //System.out.println("(" + x + ", " + y + ")" + " - " + p1 + " - " + p2 + " : " + slopeTo(p1) + " : " + slopeTo(p2) + " : " + compare);
+            return compare;
+        }
+    }
 }

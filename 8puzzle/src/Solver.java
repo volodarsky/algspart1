@@ -45,7 +45,6 @@ public class Solver {
             BoardComparable that = (BoardComparable) o;
             return Objects.equals(board, that.board);
         }
-
     }
 
     // find a solution to the initial board (using the A* algorithm)
@@ -56,7 +55,6 @@ public class Solver {
         int moves = 0;
         final MinPQ<BoardComparable> boards = new MinPQ<>();
         final PriorityQueue<BoardComparable> priorityQueue = new PriorityQueue<>();
-
 
         final BoardComparable boardComparable = new BoardComparable(initial, moves);
         boards.insert(boardComparable);
@@ -83,6 +81,9 @@ public class Solver {
                 return;
             }
             final Iterable<Board> neighbors = min.getBoard().neighbors();
+            while(!boards.isEmpty()){
+                boards.delMin();
+            }
 
             int ncounts = 0;
             for (Board neighbor : neighbors) {
@@ -97,6 +98,9 @@ public class Solver {
                 isSolvable = false;
                 this.moves = -1;
                 //System.out.println("here 2");
+                for (Board board : solution) {
+                    StdOut.println(board);
+                }
                 return;
             }
 
