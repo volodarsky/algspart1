@@ -54,6 +54,7 @@ public class Solver {
 
         int moves = 0;
         final MinPQ<BoardComparable> boards = new MinPQ<>();
+
         final PriorityQueue<BoardComparable> priorityQueue = new PriorityQueue<>();
 
         final BoardComparable boardComparable = new BoardComparable(initial, moves);
@@ -88,13 +89,13 @@ public class Solver {
             int ncounts = 0;
             for (Board neighbor : neighbors) {
                 final BoardComparable comparable = new BoardComparable(neighbor, moves);
-                if(!priorityQueue.contains(comparable)){
+                //if(!priorityQueue.contains(comparable)){
                     boards.insert(comparable);
-                    priorityQueue.add(comparable);
-                    ncounts++;
-                }
+                    //priorityQueue.add(comparable);
+                    //ncounts++;
+                //}
             }
-            if(ncounts == 0 && boards.isEmpty()){
+            /*if(ncounts == 0 && boards.isEmpty()){
                 isSolvable = false;
                 this.moves = -1;
                 //System.out.println("here 2");
@@ -102,7 +103,7 @@ public class Solver {
                     StdOut.println(board);
                 }
                 return;
-            }
+            }*/
 
             min = boards.delMin();
 

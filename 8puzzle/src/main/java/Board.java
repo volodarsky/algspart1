@@ -176,15 +176,7 @@ public class Board {
         return neighbors;
     }
 
-    private int getEmptyIndex() {
-        int empty = 0;
-        for (int i = 1; i < elements.length; i++) {
-            if (elements[i] == 0) {
-                empty = i;
-            }
-        }
-        return empty;
-    }
+
 
     // string representation of this board (in the output format specified below)
     public String toString() {
@@ -205,42 +197,14 @@ public class Board {
         a[i] ^= a[j];
     }
 
-    // unit tests (not graded)
-    public static void main(String[] args) {
-
-        //final int[][] grid = {{1, 2, 3}, {4, 0, 6}, {7, 8, 5}};
-        final int[][] grid = {{0, 2}, {3, 1}};
-
-        final Board original = new Board(grid);
-
-        //System.out.println(original.toString());
-
-        final boolean goal = original.isGoal();
-        //assert goal;
-        //System.out.println(original.goalBoard);
-        System.out.println(original.twin());
-
-        final Iterable<Board> neighbors = original.neighbors();
-        for (Board neighbor : neighbors) {
-            //System.out.println(neighbor);
+    private int getEmptyIndex() {
+        int empty = 0;
+        for (int i = 1; i < elements.length; i++) {
+            if (elements[i] == 0) {
+                empty = i;
+            }
         }
-
-        System.out.println(original.manhattan());
-    }
-
-    private static void testForCorner(){
-        final int[][] grid = {{1, 2, 3}, {4, 0, 6}, {7, 8, 5}};
-        final Board original = new Board(grid);
-    }
-
-    private static void testForCenter(){
-        final int[][] grid = {{1, 2, 3}, {4, 0, 6}, {7, 8, 5}};
-
-        final Board original = new Board(grid);
-        final Iterable<Board> neighbors = original.neighbors();
-        for (Board neighbor : neighbors) {
-
-        }
+        return empty;
     }
 
 }

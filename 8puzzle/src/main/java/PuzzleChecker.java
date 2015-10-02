@@ -47,16 +47,8 @@ public class PuzzleChecker {
 
             // solve the slider puzzle
             Board initial = new Board(tiles);
-            final Iterable<Board> neighbors = initial.neighbors();
-
-
-
-
 
             Solver solver = new Solver(initial);
-
-
-
             StdOut.println(filename + ": " + solver.moves());
             final Iterable<Board> solution = solver.solution();
             if (solution != null) {
