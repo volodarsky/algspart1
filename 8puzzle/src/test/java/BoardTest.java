@@ -1,11 +1,7 @@
-import junit.framework.Assert;
-import org.junit.Test;
-
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
-
-import static org.junit.Assert.*;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * @author vladimir.romanov
