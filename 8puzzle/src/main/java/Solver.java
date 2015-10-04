@@ -107,7 +107,7 @@ public class Solver {
 
             min = boards.delMin();
 
-            //System.out.println("Solution size : " + solution.size());
+            System.out.println("Solution size : " + solution.size());
         }
         solution.add(min.getBoard());
         isSolvable = true;
