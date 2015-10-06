@@ -11,9 +11,10 @@ import static java.lang.Math.*;
  */
 public class Board {
 
-    private int[] elements;
+    int[] elements;
+    Board goalBoard = null;
+
     private int size;
-    private Board goalBoard = null;
     private int hamming = -1;
     private int manhattan = -1;
 
@@ -21,7 +22,8 @@ public class Board {
     // (where blocks[i][j] = block in row i, column j)
     public Board(int[][] blocks) {
 
-        if(blocks == null) throw new NullPointerException();
+        if (blocks == null)
+            throw new NullPointerException();
 
         assert blocks.length == blocks[0].length;
         size = blocks.length;
@@ -39,7 +41,8 @@ public class Board {
     private int countNulls() {
         int nulls = 0;
         for (int element : elements) {
-            if (element == 0) nulls++;
+            if (element == 0)
+                nulls++;
         }
         return nulls;
     }
@@ -55,7 +58,7 @@ public class Board {
             hamming = 0;
             for (int i = 1; i < elements.length; i++) {
                 int element = elements[i];
-                if(element != 0 && element != i){
+                if (element != 0 && element != i) {
                     hamming++;
                 }
             }
@@ -69,14 +72,16 @@ public class Board {
             manhattan = 0;
             for (int i = 1; i < elements.length; i++) {
                 int element = elements[i];
-                if(element != 0){
+                if (element != 0) {
                     int curr_row = i % size == 0 ? i / size : i / size + 1;
                     int curr_col = i % size;
-                    if(curr_col == 0) curr_col = size;
+                    if (curr_col == 0)
+                        curr_col = size;
 
                     int tag_row = element % size == 0 ? element / size : element / size + 1;
                     int tag_col = element % size;
-                    if(tag_col == 0) tag_col = size;
+                    if (tag_col == 0)
+                        tag_col = size;
 
                     manhattan = manhattan + (abs(curr_row - tag_row) + abs(curr_col - tag_col));
                 }
@@ -114,17 +119,19 @@ public class Board {
         int j = 0, k = 0;
         for (int i = 1; i < elements.length; i = i + size) {
             j = k = i;
-            while (elements[j] == 0) j++;
-            while (elements[k] == 0 || j == k) k++;
+            while (elements[j] == 0)
+                j++;
+            while (elements[k] == 0 || j == k)
+                k++;
 
-            if (abs(k - j) == 1 && (j - 1)/size == (k - 1)/ size) break;
+            if (abs(k - j) == 1 && (j - 1) / size == (k - 1) / size)
+                break;
         }
         swap(elements, j, k);
         return board;
     }
 
-
-    private Board cloneBoard() {
+    Board cloneBoard() {
         final int[] copy = Arrays.copyOf(elements, elements.length);
         final int[][] blocks = new int[size][size];
 
@@ -134,11 +141,12 @@ public class Board {
         return new Board(blocks);
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Board)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Board))
+            return false;
         Board board = (Board) o;
         return Objects.equals(size, board.size) && Arrays.equals(elements, board.elements);
     }
@@ -155,7 +163,7 @@ public class Board {
             swap(board.elements, empty, empty + 1);
             neighbors.add(board);
         }
-        //has left
+        // has left
         if (empty % size != 1) {
             final Board board = cloneBoard();
             swap(board.elements, empty, empty - 1);
@@ -167,7 +175,7 @@ public class Board {
             swap(board.elements, empty, empty - size);
             neighbors.add(board);
         }
-        //has bottom
+        // has bottom
         if (empty + size <= size * size) {
             final Board board = cloneBoard();
             swap(board.elements, empty, empty + size);
@@ -176,21 +184,26 @@ public class Board {
         return neighbors;
     }
 
-
-
     // string representation of this board (in the output format specified below)
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(size).append('\n');
         for (int i = 1; i < elements.length; i++) {
-            if(elements[i] < 10) builder.append(' ');
-            builder.append(elements[i]).append(' ');
-            if (i % size == 0) builder.append('\n');
+            if (elements[i] < 10)
+                builder.append(' ');
+            if (elements[i] != 0) {
+                builder.append(elements[i]);
+            } else {
+                builder.append(" ");
+            }
+            builder.append(' ');
+            if (i % size == 0)
+                builder.append('\n');
         }
         return builder.toString();
     }
 
-    private void swap(int[] a, int i, int j) {
+    static void swap(int[] a, int i, int j) {
         assert i < a.length && j < a.length;
         a[i] ^= a[j];
         a[j] ^= a[i];
