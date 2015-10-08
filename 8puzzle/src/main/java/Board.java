@@ -11,8 +11,8 @@ import static java.lang.Math.*;
  */
 public class Board {
 
-    int[] elements;
-    Board goalBoard = null;
+    private int[] elements;
+    private Board goalBoard = null;
 
     private int size;
     private int hamming = -1;
@@ -131,7 +131,7 @@ public class Board {
         return board;
     }
 
-    Board cloneBoard() {
+    private Board cloneBoard() {
         final int[] copy = Arrays.copyOf(elements, elements.length);
         final int[][] blocks = new int[size][size];
 
@@ -191,19 +191,15 @@ public class Board {
         for (int i = 1; i < elements.length; i++) {
             if (elements[i] < 10)
                 builder.append(' ');
-            if (elements[i] != 0) {
-                builder.append(elements[i]);
-            } else {
-                builder.append(" ");
-            }
-            builder.append(' ');
+
+            builder.append(elements[i]).append(' ');
             if (i % size == 0)
                 builder.append('\n');
         }
         return builder.toString();
     }
 
-    static void swap(int[] a, int i, int j) {
+    private static void swap(int[] a, int i, int j) {
         assert i < a.length && j < a.length;
         a[i] ^= a[j];
         a[j] ^= a[i];

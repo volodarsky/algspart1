@@ -2,6 +2,7 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -14,8 +15,11 @@ public class Solver {
     private List<Board> solution = new LinkedList<>();
 
     private final BoardNodeComparator comparator = new BoardNodeComparator();
-    ArrayList<BoardComparable> leafs = new ArrayList<>();
+    private TreeSet<BoardComparable> leafs = new TreeSet<>(comparator);
+
     private boolean isSolvable;
+    private Board goal;
+    private Board goalTwin;
 
     private static class BoardComparable implements Comparable<BoardComparable> {
 
@@ -46,7 +50,11 @@ public class Solver {
             return (this.board.manhattan() + this.move) - (that.getBoard().manhattan() + that.getMove());
         }
 
-        @Override
+        public int manhattan(){
+            return board.manhattan();
+        }
+
+        /*@Override
         public boolean equals(Object o) {
             if (this == o)
                 return true;
@@ -54,7 +62,7 @@ public class Solver {
                 return false;
             BoardComparable that = (BoardComparable) o;
             return Objects.equals(board, that.board);
-        }
+        }*/
     }
 
     // find a solution to the initial board (using the A* algorithm)
@@ -65,23 +73,29 @@ public class Solver {
         }
         if (initial.isGoal()) {
             isSolvable = true;
+            return;
         }
+        if (initial.twin().isGoal()) {
+            isSolvable = false;
+            return;
+        }
+        //System.out.println("Initial : " + initial);
+        //initial = initial.twin();
+        // System.out.println("Initial twin: " + initial);
+        initGoal(initial.dimension());
 
-        System.out.println(initial);
 
-        final Board goalBoard = initial.goalBoard;
-        final Board twin = goalBoard.cloneBoard();
-        Board.swap(twin.elements, 1, 2);
+
         int moves = 0;
 
         final MinPQ<BoardComparable> boards = new MinPQ<>();
-        final BoardComparable boardComparable = new BoardComparable(null, initial, moves);
+        BoardComparable boardComparable = new BoardComparable(null, initial, moves);
 
         boards.insert(boardComparable);
         BoardComparable min = boards.delMin();
         Board currSearchNode = min.getBoard();
 
-        //BoardNode<BoardComparable> solveBoard = new BoardNode<>(null, new BoardComparable(currSearchNode, moves));
+        // BoardNode<BoardComparable> solveBoard = new BoardNode<>(null, new BoardComparable(currSearchNode, moves));
         BoardTree boardTree = new BoardTree();
 
         do {
@@ -90,49 +104,61 @@ public class Solver {
             final Iterable<Board> neighbors = currSearchNode.neighbors();
             for (Board neighbor : neighbors) {
 
-                final BoardComparable comparable = new BoardComparable(neighbor, moves);
-                final BoardNode<BoardComparable> boardNode = new BoardNode<>(solveBoard, comparable);
+                final BoardComparable comparable = new BoardComparable(boardComparable, neighbor, moves);
 
-                if (!boardTree.hasNode(boardNode.value) && !neighbor.equals(initial)) {
+                if (!leafs.contains(comparable) && !neighbor.equals(initial)) {
                     boards.insert(comparable);
-                    boardTree.addLeaf(boardNode.value);
+                    leafs.add(comparable);
                 }
             }
-
-
-            final BoardComparable comparable = boards.delMin();
-            currSearchNode = comparable.getBoard();
-
-            solveBoard = boardTree.searchNode(comparable);
-            System.out.print("Next min: " + currSearchNode);
-            if (solveBoard != null) {
-                System.out.println("Next solve: " + solveBoard.value.board);
-            }else{
-                System.out.println();
+            try {
+                boardComparable = boards.delMin();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            currSearchNode = boardComparable.getBoard();
 
+            //System.out.print("Move [" + moves + "] Mantattan : [" + currSearchNode.manhattan() + "] Next min: " + currSearchNode);
 
-            if (solveBoard == null) {
-                System.out.println();
-            }
-
-            if (currSearchNode.equals(twin)) {
+            if (currSearchNode.twin().isGoal() || currSearchNode.equals(goalTwin)) {
                 isSolvable = false;
                 return;
             }
-        } while (!currSearchNode.isGoal());
+        } while (!currSearchNode.equals(goal));
 
         // assert solveBoard.value.board.equals(currSearchNode);
 
-
-
-        while (solveBoard.parent != null) {
-            solution.add(solveBoard.value.board);
-            solveBoard = solveBoard.parent;
+        while (boardComparable.parent != null) {
+            solution.add(boardComparable.board);
+            boardComparable = boardComparable.parent;
         }
         Collections.reverse(solution);
-        System.out.println("Solution size : " + solution.size());
+
         isSolvable = true;
+    }
+
+    private void initGoal(int dimension) {
+        int N = dimension;
+        int k = 1;
+        int[][] tiles = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                tiles[i][j] = k++;
+            }
+        }
+        tiles[N - 1][N -1] = 0;
+        goal = new Board(tiles);
+        //System.out.println(goal);
+
+        swap(tiles, 0, 0, 0, 1);
+        goalTwin = new Board(tiles);
+        //System.out.println(goalTwin);
+    }
+
+    private static void swap(int[][] a, int i, int j, int k, int l) {
+        int temp = a[i][j];
+        a[i][j] = a[k][l];
+        a[k][l] = temp;
     }
 
     private static class BoardTree {
@@ -142,14 +168,14 @@ public class Solver {
 
         void addLeaf(BoardComparable boardComparable) {
             leafs.add(boardComparable);
-            Collections.sort(leafs,comparator);
+            Collections.sort(leafs, comparator);
         }
 
         boolean hasNode(BoardComparable boardComparable) {
-            final int binarySearch = Collections.binarySearch(leafs, boardComparable, comparator);
-            if(binarySearch >= 0){
+            final int binarySearch = Collections.binarySearch(leafs, boardComparable);
+            if (binarySearch >= 0) {
                 final BoardComparable boardNode = leafs.get(binarySearch);
-                if(boardNode.board.equals(boardComparable.board)){
+                if (boardNode.board.equals(boardComparable.board)) {
                     return true;
                 }
             }
@@ -157,10 +183,10 @@ public class Solver {
         }
 
         BoardComparable searchNode(BoardComparable board) {
-            final int binarySearch = Collections.binarySearch(leafs, board, comparator);
-            if(binarySearch >= 0){
+            final int binarySearch = Collections.binarySearch(leafs, board);
+            if (binarySearch >= 0) {
                 final BoardComparable node = leafs.get(binarySearch);
-                if(node.board.equals(board.board)){
+                if (node.board.equals(board.board)) {
                     return node;
                 }
             }
@@ -172,7 +198,8 @@ public class Solver {
 
         @Override
         public int compare(BoardComparable o1, BoardComparable o2) {
-            return o1.compareTo(o2);
+            final int compareTo = o1.compareTo(o2);
+            return compareTo == 0 ? o1.equals(o2) ? 0 : -1 : compareTo;
         }
     }
 
