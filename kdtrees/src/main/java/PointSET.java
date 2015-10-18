@@ -64,14 +64,17 @@ public class PointSET {
             return null;
         }
 
-        final Point2D floor = set.floor(p);
-        final Point2D ceiling = set.ceiling(p);
+        Point2D floor = set.floor(p);
+        Point2D ceiling = set.ceiling(p);
         if(floor == null){
             return ceiling;
         }
         if(ceiling == null){
             return floor;
         }
+
+        if(floor.equals(p)) floor = ceiling;
+        if(ceiling.equals(p)) ceiling = floor;
 
         return p.distanceTo(floor) <= p.distanceTo(ceiling) ? floor : ceiling;
     }
