@@ -18,6 +18,13 @@ public class Board {
     private int hamming = -1;
     private int manhattan = -1;
 
+    private Board top;
+    private Board bottom;
+    private Board left;
+    private Board right;
+
+
+
     // construct a board from an N-by-N array of blocks
     // (where blocks[i][j] = block in row i, column j)
     public Board(int[][] blocks) {
@@ -143,13 +150,13 @@ public class Board {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof Board))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof Board)) return false;
         Board board = (Board) o;
-        return Objects.equals(size, board.size) && Arrays.equals(elements, board.elements);
+        return Objects.equals(elements, board.elements);
     }
+
+
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
@@ -159,27 +166,41 @@ public class Board {
         assert empty != 0;
         // has right
         if (empty % size != 0) {
-            final Board board = cloneBoard();
-            swap(board.elements, empty, empty + 1);
-            neighbors.add(board);
+            if (right == null) {
+                right = cloneBoard();
+                swap(right.elements, empty, empty + 1);
+                right.left = this;
+            }
+            neighbors.add(right);
         }
         // has left
         if (empty % size != 1) {
-            final Board board = cloneBoard();
-            swap(board.elements, empty, empty - 1);
-            neighbors.add(board);
+            final Board board;
+            if (left == null) {
+                left = cloneBoard();
+                swap(left.elements, empty, empty - 1);
+            }
+            left.right = this;
+            neighbors.add(left);
         }
         // has top
         if (empty > size) {
-            final Board board = cloneBoard();
-            swap(board.elements, empty, empty - size);
-            neighbors.add(board);
+            final Board board;
+            if (top == null) {
+                top = cloneBoard();
+                swap(top.elements, empty, empty - size);
+                top.bottom = this;
+            }
+            neighbors.add(top);
         }
         // has bottom
         if (empty + size <= size * size) {
-            final Board board = cloneBoard();
-            swap(board.elements, empty, empty + size);
-            neighbors.add(board);
+            if (bottom == null) {
+                bottom = cloneBoard();
+                swap(bottom.elements, empty, empty + size);
+                bottom.top = this;
+            }
+            neighbors.add(bottom);
         }
         return neighbors;
     }

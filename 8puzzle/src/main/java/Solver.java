@@ -19,6 +19,8 @@ public class Solver {
 
         @Override
         public int compare(Board b1, Board b2) {
+            if (b1 == b2)
+                return 0;
             final int i = b1.manhattan() - b2.manhattan();
             return i != 0 ? i : b1.equals(b2) ? 0 : -1;
         }
@@ -28,7 +30,6 @@ public class Solver {
     private boolean isSolvable;
     private Board goal;
     private Board goalTwin;
-
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
@@ -47,8 +48,8 @@ public class Solver {
             isSolvable = false;
             return;
         }
-        //System.out.println("Initial : " + initial);
-        //initial = initial.twin();
+        // System.out.println("Initial : " + initial);
+        // initial = initial.twin();
         // System.out.println("Initial twin: " + initial);
         initGoal(initial.dimension());
 
@@ -69,9 +70,13 @@ public class Solver {
             final Iterable<Board> neighbors = currSearchNode.neighbors();
             for (Board neighbor : neighbors) {
 
-                final BoardComparable comparable = new BoardComparable(boardComparable, neighbor, moves);
+                if (neighbor != null) {
+                    final BoardComparable comparable = new BoardComparable(boardComparable, neighbor, moves);
 
-                if (!leafs.contains(neighbor)) {
+                    if (leafs.contains(neighbor)
+                            || (boardComparable.getParent() != null && neighbor.equals(boardComparable.getParent().getBoard()))) {
+                        continue;
+                    }
                     boards.insert(comparable);
                     leafs.add(neighbor);
                 }
@@ -83,13 +88,14 @@ public class Solver {
             }
             currSearchNode = boardComparable.getBoard();
 
-            System.out.print("Move [" + moves + "] Mantattan : [" + currSearchNode.manhattan() + "] Next min: " + currSearchNode);
+            /*System.out.print("Move [" + boardComparable.getMove() + "] Mantattan : [" + currSearchNode.manhattan()
+                    + "] leafs [" + leafs.size() + "] Next min: " + currSearchNode);*/
 
             if (currSearchNode.equals(goalTwin)) {
                 isSolvable = false;
                 return;
             }
-            if(System.currentTimeMillis() - start > 9000){
+            if (System.currentTimeMillis() - start > 5000) {
                 isSolvable = false;
                 return;
             }
@@ -115,13 +121,13 @@ public class Solver {
                 tiles[i][j] = k++;
             }
         }
-        tiles[N - 1][N -1] = 0;
+        tiles[N - 1][N - 1] = 0;
         goal = new Board(tiles);
-        System.out.println(goal);
+        //System.out.println(goal);
 
         swap(tiles, 0, 0, 0, 1);
         goalTwin = new Board(tiles);
-        System.out.println(goalTwin);
+        //System.out.println(goalTwin);
     }
 
     private boolean exists(MinPQ<BoardComparable> boards, Board neighbor) {
@@ -216,13 +222,11 @@ public class Solver {
             return getWeight() - that.getWeight();
         }
 
-        public int manhattan(){
+        public int manhattan() {
             return board.manhattan();
         }
 
-
     }
-
 
     private static class BoardNodeComparator implements Comparator<BoardComparable> {
         @Override
