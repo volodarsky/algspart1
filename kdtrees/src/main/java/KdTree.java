@@ -19,7 +19,6 @@ public class KdTree {
 
     // construct an empty set of points
     public KdTree() {
-
     }
 
     // is the set empty?
@@ -34,7 +33,7 @@ public class KdTree {
 
     // add the point to the set (if it is not already in the set)
     public void insert(Point2D p) {
-        requireNonNull(p);
+        if (contains(p)) return;
         size++;
         if (root == null) {
             initRoot(p);
@@ -168,7 +167,7 @@ public class KdTree {
         public boolean contains(Point2D p) {
             if (p.equals(value)) {
                 return true;
-            } else if (p.compareTo(value) < 0) {
+            } else if (p.compareTo(value) <= 0) {
                 return left != null && left.contains(p);
             } else {
                 return right != null && right.contains(p);
@@ -180,9 +179,17 @@ public class KdTree {
             if (value.compareTo(p) == 0) {
                 return value;
             } else if (value.compareTo(p) < 0) {
-                return left.value.compareTo(p) > 0 ? left.value : left.floor(p);
+                if (left != null) {
+                    return left.value.compareTo(p) > 0 ? left.value : left.floor(p);
+                } else {
+                    return value;
+                }
             } else {
-                return right.value.compareTo(p) < 0 ? value : right.floor(p);
+                if (right != null) {
+                    return right.value.compareTo(p) < 0 ? value : right.floor(p);
+                }else{
+                    return value;
+                }
             }
         }
 
@@ -191,9 +198,17 @@ public class KdTree {
             if (value.compareTo(p) == 0) {
                 return value;
             } else if (value.compareTo(p) < 0) {
-                return left.value.compareTo(p) > 0 ? value : left.ceiling(p);
+                if (left != null) {
+                    return left.value.compareTo(p) > 0 ? value : left.ceiling(p);
+                }else {
+                    return value;
+                }
             } else {
-                return right.value.compareTo(p) < 0 ? right.value : right.ceiling(p);
+                if (right != null) {
+                    return right.value.compareTo(p) < 0 ? right.value : right.ceiling(p);
+                } else {
+                    return value;
+                }
             }
         }
 
